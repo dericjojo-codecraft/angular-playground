@@ -1,5 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { HousingLocation } from '@components/housing-component/housing-location';
+import { Component, inject, Signal, signal, computed } from '@angular/core';
+import { HousingLocation } from '@components/housing-location/housing-location';
 import { HousingLocationInfo } from '@models/housing-location';
 import { LocationService } from '@services/location-service';
 
@@ -15,20 +15,31 @@ import { LocationService } from '@services/location-service';
 export class Home {
   locationService: LocationService = inject(LocationService);
   mode = signal<'normal' | 'edit'>('normal');
-  
-  handleLocationClicked(location: HousingLocationInfo) {
-    console.log(`Home: ${location.name} clicked!`);
-
-    const locationIndex:number = this.locationService.locations.findIndex(loc => loc.id === location.id);
-    const locationItem:HousingLocationInfo = this.locationService.locations[locationIndex];
+  recentId = signal<number>(-1);
+  recentLocation = computed(() => 
+    this.recentId() >= 0 
+      ? this.locationService.getAllLocations()[this.recentId()] 
+      : undefined
+  );
+  message = "";
+  checked = signal<string>("")
+  messageComputed = computed(() => {
     
-    this.locationService.locations.splice(locationIndex, 1);
-    this.locationService.locations.unshift(locationItem);
+  })
+
+  
+  handleLocationClicked(location: HousingLocationInfo | undefined) {
+    if(location) {
+      console.log(`${location.name} clicked!`);
+
+      const index = this.locationService.housingLocations.findIndex(loc => loc.id === location.id);
+      this.recentId.set(index);
+    }  
   }
 
   handleCheckbox(event: Event) {
-    console.log("Mode toggled");
-    this.mode = this.mode === signal('normal') ? this.mode = signal('edit') : signal('normal');
+    this.mode.update(prev => prev === 'normal' ? 'edit' : 'normal');
+    console.log("Mode toggled to ", this.mode.name);
   }
   
 }

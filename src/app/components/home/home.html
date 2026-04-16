@@ -1,13 +1,27 @@
 <section class="grid-container">
-    <div id="mode-checkbox">
+    <div id="mode-checkbox" (change)="handleCheckbox($event)">
+        <p>{{ message }}</p>
+        <input type="checkbox"/>
+    </div>
+    <div id="latest-home">
+        @if(recentId() > -1) {
+        <h3>Recently Viewed</h3>
+        <app-housing-location [location]="recentLocation()">
+        </app-housing-location>
+        } @else {}
         
     </div>
+    <h1>All Locations</h1>
 <div class="grid">
-    @for (housingLocation of locationService.locations; track $index) {
-        <app-housing-location [location]="housingLocation" (onLocationClick)="handleLocationClicked($event)">
-    </app-housing-location>
-    } @empty {
-        <h2> No items available </h2>
+    @if(locationService.housingLocations) {
+        @for (housingLocation of locationService.housingLocations; track $index) {
+            <app-housing-location [location]="housingLocation" (onLocationClick)="handleLocationClicked($event)">
+        </app-housing-location>
+        } @empty {
+            <h2> No items available </h2>
+        }
+    } @else {
+        <h2>No Locations Available</h2>
     }
 </div>
 </section>

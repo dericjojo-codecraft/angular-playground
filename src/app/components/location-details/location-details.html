@@ -1,0 +1,45 @@
+<div class="details-container">
+  <button
+    class="nav-button" id="nav-prev"
+    (click)="goToPrevious()"
+    [disabled]="!hasPrevious()">
+    ‹
+  </button>
+
+  <article class="location-details">
+    @if (location()) {
+      <section class="location-header">
+        <h1>{{ location()!.name }}</h1>
+        <img [src]="location()!.img" [alt]="location()!.name" class="location-image">
+      </section>
+
+      <section class="location-info">
+        <h2>Property Details</h2>
+        <p><strong>ID:</strong> {{ location()!.id }}</p>
+
+        @if (location()!.properties && location()!.properties!.length > 0) {
+          <div class="properties">
+            <h3>Amenities:</h3>
+            <ul>
+              @for (property of location()!.properties; track $index) {
+                <li>{{ property }}</li>
+              }
+            </ul>
+          </div>
+        } @else {
+          <p>No amenities listed.</p>
+        }
+      </section>
+    } @else {
+      <p>Location not found.</p>
+    }
+  </article>
+
+  <button
+    class="nav-button" id="nav-next"
+    (click)="goToNext()"
+    [disabled]="!hasNext()"
+    aria-label="Next location">
+    ›
+  </button>
+</div>

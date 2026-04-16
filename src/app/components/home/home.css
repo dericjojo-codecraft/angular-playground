@@ -1,15 +1,20 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 .grid-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 30px;
-  width: 1000px;
+  width: 100%;
   height: fit-content;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 2fr));
   gap: 20px;
   width: 100%;
   padding-top: 20px;
@@ -88,4 +93,12 @@ app-housing-location:active {
 
 #counter {
   font-size: 16px;
+}
+
+#mode-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
