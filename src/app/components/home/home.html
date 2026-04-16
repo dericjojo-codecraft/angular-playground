@@ -1,7 +1,7 @@
 <section class="grid-container">
 <div class="grid">
-    @for (housingLocation of locations; track $index) {
-        <app-housing-location [location]="housingLocation" (onLocationClick)="handleLocationClicked($event)">
+    @for (housingLocation of locationService.locations; track $index) {
+        <app-housing-location [location]="housingLocation" (onLocationClick)="locationService.handleLocationClicked($event)">
     </app-housing-location>
     } @empty {
         <h2> No items available </h2>

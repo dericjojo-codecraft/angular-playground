@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HousingLocationInfo } from '@models/housing-location';
 
@@ -10,6 +10,7 @@ import { HousingLocationInfo } from '@models/housing-location';
   styleUrl: './housing-location.css',
 })
 
+//! each card shouldnt inject to location-services, only corresponding parent
 export class HousingLocation {
   location = input.required<HousingLocationInfo>();
   onLocationClick = output<HousingLocationInfo>();

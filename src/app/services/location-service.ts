@@ -1,18 +1,21 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HousingLocation } from '@components/housing-component/housing-location';
-import { HousingLocationInfo } from '@models/housing-location';
+import { Injectable, InjectionToken } from "@angular/core";
+import { HousingLocationInfo } from "@models/housing-location";
 
-@Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule, HousingLocation],
-  templateUrl: './home.html',
-  styleUrl: './home.css',
+export const BASE_URL = new InjectionToken<string>('base url', {providedIn: 'root', factory: () => 'string'})
+
+@Injectable({
+    providedIn: 'root',
 })
-export class Home {
-  counter: number = 0;
-  private readonly imglink = 'https://plus.unsplash.com/premium_photo-1675826539716-54a369329428?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8';
+
+export class LocationService {
+    static numberOfInstances = 0;
+
+    constructor() {
+        LocationService.numberOfInstances += 1;
+        console.log("Number of instances:", LocationService.numberOfInstances);
+    }
+    
+    private readonly imglink = 'https://plus.unsplash.com/premium_photo-1675826539716-54a369329428?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8';
 
   locations: HousingLocationInfo[] = [
     { id: 1, name: 'Downtown Apartment', img: this.imglink, properties: ["wifi"]},
@@ -33,11 +36,4 @@ export class Home {
     this.locations.unshift(locationItem);
   }
 
-  handleIncrement() {
-    this.counter++;
-  }
-
-  handleDecrement() {
-    this.counter--;
-  }
 }
