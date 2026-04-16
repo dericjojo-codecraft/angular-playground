@@ -14,7 +14,7 @@ export class LocationService {
         LocationService.numberOfInstances += 1;
         console.log("Number of instances:", LocationService.numberOfInstances);
     }
-    
+
     private readonly imglink = 'https://plus.unsplash.com/premium_photo-1675826539716-54a369329428?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8';
 
   locations: HousingLocationInfo[] = [
@@ -25,15 +25,4 @@ export class LocationService {
     { id: 5, name: 'City Loft', img: this.imglink, properties: []},
     { id: 6, name: 'Countryside Estate', img: this.imglink, properties: []}
   ];
-
-  handleLocationClicked(location: HousingLocationInfo) {
-    console.log(`Home: ${location.name} clicked!`);
-
-    const locationIndex:number = this.locations.findIndex(loc => loc.id === location.id);
-    const locationItem:HousingLocationInfo = this.locations[locationIndex];
-    
-    this.locations.splice(locationIndex, 1);
-    this.locations.unshift(locationItem);
-  }
-
 }

@@ -1,15 +1,13 @@
 <section class="grid-container">
+    <div id="mode-checkbox">
+        
+    </div>
 <div class="grid">
     @for (housingLocation of locationService.locations; track $index) {
-        <app-housing-location [location]="housingLocation" (onLocationClick)="locationService.handleLocationClicked($event)">
+        <app-housing-location [location]="housingLocation" (onLocationClick)="handleLocationClicked($event)">
     </app-housing-location>
     } @empty {
         <h2> No items available </h2>
     }
-</div>
-<div class="counter-container">
-    <button class="counter-button" id="increment">+</button>
-    <span id="counter">{{ counter }}</span>
-    <button class="counter-button" id="decrement">-</button>
 </div>
 </section>

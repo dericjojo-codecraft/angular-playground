@@ -1,6 +1,10 @@
 .grid-container {
-    width: 1000px;
-    height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  width: 1000px;
+  height: fit-content;
 }
 
 .grid {
@@ -9,7 +13,6 @@
   gap: 20px;
   width: 100%;
   padding-top: 20px;
-  border: #e20000 solid 1px;
 }
 
 @keyframes tap {
@@ -64,13 +67,14 @@ app-housing-location:active {
 }
 
 .counter-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
 }
 
 .counter-button {
-  background-color: #007bff;
+  background-color: #ef6a22;
   color: white;
   border: none;
   border-radius: 4px;
@@ -78,4 +82,10 @@ app-housing-location:active {
   font-size: 16px;
   cursor: pointer;
   margin: 0 5px;
+  height:30px;
+  width: 30px;
+}
+
+#counter {
+  font-size: 16px;
 }

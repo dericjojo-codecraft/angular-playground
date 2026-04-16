@@ -8,7 +8,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "push": "git add . && git commit -m \"default message\" && git push -u origin main"
+    "push": "git add . && git commit -m \"default message\" && git push"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
