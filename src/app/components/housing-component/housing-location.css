@@ -1,0 +1,12 @@
+.svg-symbol {
+  width: 20px;
+  height: 20px;
+}
+
+.symbols-array {
+  display: flex;
+  margin-top: 8px;
+  justify-content: center;
+  gap: 8px;
+}
+

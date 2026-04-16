@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: block;
+  background-color: #ffe0e0;
+}
+
+app-root {
+  display: block; /* Essential! This allows the app to take up width */
+  width: 100%;
+}

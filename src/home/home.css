@@ -1,0 +1,81 @@
+.grid-container {
+    width: 1000px;
+    height: fit-content;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+  padding-top: 20px;
+  border: #e20000 solid 1px;
+}
+
+@keyframes tap {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.99);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+app-housing-location {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #f8fafc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
+  width: auto;
+  min-width: 0;
+}
+
+app-housing-location.swapping {
+  animation: swap 0.28s ease-in-out;
+}
+
+@keyframes swap {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(-10px) scale(1.03);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(0) scale(1.01);
+    opacity: 1;
+  }
+}
+
+app-housing-location:active {
+  animation: tap 0.3s ease-in-out;
+}
+
+.counter-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.counter-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 5px;
+}
