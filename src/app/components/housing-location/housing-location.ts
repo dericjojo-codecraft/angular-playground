@@ -15,6 +15,8 @@ export class HousingLocation {
   location = input.required<HousingLocationInfo | undefined>();
   onLocationClick = output<HousingLocationInfo | undefined>();
 
+  isSelected = input(false);
+
   handleClick() {
     this.onLocationClick.emit(this.location());
   }

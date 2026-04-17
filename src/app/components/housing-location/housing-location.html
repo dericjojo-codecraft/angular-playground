@@ -1,5 +1,5 @@
 @if(location()) {
-  <button type="button" (click)="handleClick()">
+  <button type="button" [ngClass]="{ 'selected': isSelected() }" (click)="handleClick()">
       <img [src]="location()!.img" [alt]="">
       <h2>{{ location()!.name }}</h2>
       <section class="symbols-array">
