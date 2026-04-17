@@ -10,4 +10,7 @@
   gap: 8px;
 }
 
-
+:host.selected {
+  border: 3px solid blue;
+  background-color: #e0f0ff;
+}

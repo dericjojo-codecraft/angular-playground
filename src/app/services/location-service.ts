@@ -22,23 +22,23 @@ export class LocationService {
     }
 
     housingLocations: HousingLocationInfo[] = [
-    { id: 1, name: 'Downtown Apartment', img: this.imglink, properties: ["wifi"]},
-    { id: 2, name: 'Suburban House', img: this.imglink, properties: ["ac"]},
-    { id: 3, name: 'Beachfront Condo', img: this.imglink, properties: ["ac", "wifi"]},
-    { id: 4, name: 'Mountain Cabin', img: this.imglink, properties: ["ac", "ac", "ac"]},
-    { id: 5, name: 'City Loft', img: this.imglink, properties: []},
-    { id: 6, name: 'Countryside Estate', img: this.imglink, properties: []}
-  ];
+      { id: 1, name: 'Downtown Apartment', img: this.imglink, properties: ["wifi"]},
+      { id: 2, name: 'Suburban House', img: this.imglink, properties: ["ac"]},
+      { id: 3, name: 'Beachfront Condo', img: this.imglink, properties: ["ac", "wifi"]},
+      { id: 4, name: 'Mountain Cabin', img: this.imglink, properties: ["ac", "ac", "ac"]},
+      { id: 5, name: 'City Loft', img: this.imglink, properties: []},
+      { id: 6, name: 'Countryside Estate', img: this.imglink, properties: []}
+    ];
 
-  getAllLocations() {
-    return this.housingLocations;
-  }
+    getAllLocations() {
+      return this.housingLocations;
+    }
 
-  getLocationById(id: number): HousingLocationInfo | undefined {
-    return this.housingLocations.find(location => location.id === id);
-  }
+    getLocationById(id: number): HousingLocationInfo | undefined {
+      return this.housingLocations.find(location => location.id === id);
+    }
 
-  getLocationForId(location: HousingLocationInfo) {
-    return location.id;
-  }
+    getLocationForId(location: HousingLocationInfo) {
+      return location.id;
+    }
 }

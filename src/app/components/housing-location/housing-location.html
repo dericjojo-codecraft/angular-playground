@@ -1,15 +1,17 @@
 @if(location()) {
-  <button type="button" [ngClass]="{ 'selected': isSelected() }" (click)="handleClick()">
-      <img [src]="location()!.img" [alt]="">
-      <h2>{{ location()!.name }}</h2>
-      <section class="symbols-array">
-          @if(location()!.properties && location()!.properties!.length > 0) {
-              @for (property of location()!.properties; track $index) {
-                  <img class="svg-symbol" src="/public/{{ property }}-symbol.svg" alt="{{ property }}">
-              }
-          }
-      </section>
-  </button>
+  <div>
+    <button type="button" (click)="handleClick()">
+        <img [src]="location()!.img" [alt]="">
+        <h2>{{ location()!.name }}</h2>
+        <section class="symbols-array">
+            @if(location()!.properties && location()!.properties!.length > 0) {
+                @for (property of location()!.properties; track $index) {
+                    <img class="svg-symbol" src="/public/{{ property }}-symbol.svg" alt="{{ property }}">
+                }
+            }
+        </section>
+    </button>
+  </div>
 } @else {
   <p>No location data available</p>
 }

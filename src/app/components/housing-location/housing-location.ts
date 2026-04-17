@@ -8,13 +8,14 @@ import { HousingLocationInfo } from '@models/housing-location';
   imports: [CommonModule],
   templateUrl: './housing-location.html',
   styleUrl: './housing-location.css',
+  host: {
+    '[class.selected]': 'isSelected()'
+  }
 })
 
-//! each card shouldnt inject to location-services, only corresponding parent
 export class HousingLocation {
   location = input.required<HousingLocationInfo | undefined>();
   onLocationClick = output<HousingLocationInfo | undefined>();
-
   isSelected = input(false);
 
   handleClick() {

@@ -1,36 +1,40 @@
 <section class="grid-container">
     <div id="mode-checkbox" (change)="handleCheckbox()">
-        <p>{{ message }}</p>
+        <p>{{ mode() }}</p>
         <input type="checkbox"/>
     </div>
-    <!-- <div id="latest-home">
-        @if(recentId() > -1) {
-        <h3>Recently Viewed</h3>
-        <app-housing-location [location]="recentLocation()">
-        </app-housing-location>
-        } @else {}
-        
-    </div> -->
+    @if(mode() == "Edit Mode") {
+        <button (click)="handleDelete()">Delete Selected</button>
+    }
     <h1>All Locations</h1>
-<div class="grid">
-    @if(locationService.housingLocations) {
+    <div class="grid">
+        @if(locationService.housingLocations) {
+            @for (housingLocation of locationService.housingLocations; track $index) {
+                @if(!deletedLocations.includes(housingLocation)) {
+                    <app-housing-location
+                        [location]="housingLocation"
+                        [isSelected]="selectedLocations.some(loc => loc.id === housingLocation.id)"
+                        (onLocationClick)="handleLocationClicked($event)"
+                    />
+                }
+            } @empty {
+                <h2> No items available </h2>
+            }
+        } @else {
+            <h2>No Locations Available</h2>
+        }
+    </div>
+    @if(deletedLocations) {
         @for (housingLocation of locationService.housingLocations; track $index) {
-            <app-housing-location
-                [location]="housingLocation"
-                [isSelected]="selectedLocations.some(loc => loc.id === housingLocation.id)"
-                (onLocationClick)="handleLocationClicked($event)"
-            >
-        </app-housing-location>
+            @if(deletedLocations.includes(housingLocation)) {
+                <app-housing-location
+                    [location]="housingLocation"
+                    [isSelected]="deletedLocations.some(loc => loc.id === housingLocation.id)"
+                    (onLocationClick)="handleLocationClicked($event)"
+                />
+            }
         } @empty {
             <h2> No items available </h2>
         }
-    } @else {
-        <h2>No Locations Available</h2>
     }
-</div>
-<ul>
-    @for(loc of selectedLocations; track $index) {
-        <li>{{ loc.name }}</li>
-    }
-</ul>
 </section>
