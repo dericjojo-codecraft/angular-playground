@@ -22,12 +22,12 @@ export class LocationService {
     }
 
     housingLocations: HousingLocationInfo[] = [
-      { id: 1, name: 'Downtown Apartment', img: this.imglink, properties: ["wifi"]},
+      { id: 1, name: 'Downtown Apartment', img: this.imglink, properties: ["wifi", "garage"]},
       { id: 2, name: 'Suburban House', img: this.imglink, properties: ["ac"]},
       { id: 3, name: 'Beachfront Condo', img: this.imglink, properties: ["ac", "wifi"]},
-      { id: 4, name: 'Mountain Cabin', img: this.imglink, properties: ["ac", "ac", "ac"]},
-      { id: 5, name: 'City Loft', img: this.imglink, properties: []},
-      { id: 6, name: 'Countryside Estate', img: this.imglink, properties: []}
+      { id: 4, name: 'Mountain Cabin', img: this.imglink, properties: ["ac", "ac", "garage"]},
+      { id: 5, name: 'City Loft', img: this.imglink, properties: ["garage"]},
+      { id: 6, name: 'Countryside Estate', img: this.imglink, properties: ["garage", "ac"]}
     ];
 
     getAllLocations() {

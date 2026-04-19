@@ -20,7 +20,7 @@ export class Home {
   selectedLocations: HousingLocationInfo[] = [];
   deletedLocations: HousingLocationInfo[] = [];
 
-
+  deletedButtonMessage = signal<"See Deleted Locations V" | "Hide Deleted Locations ^">("See Deleted Locations V");
 
   handleLocationClicked(location: HousingLocationInfo | undefined) {
     if (location) {

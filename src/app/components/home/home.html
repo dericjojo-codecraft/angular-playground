@@ -24,6 +24,9 @@
             <h2>No Locations Available</h2>
         }
     </div>
+    <button>
+        {{ deletedButtonMessage() }}
+    </button>
     @if(deletedLocations) {
         @for (housingLocation of locationService.housingLocations; track $index) {
             @if(deletedLocations.includes(housingLocation)) {
