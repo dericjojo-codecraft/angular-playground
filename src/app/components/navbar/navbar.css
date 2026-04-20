@@ -1,62 +1,59 @@
-.navbar {
+:host .navbar {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0;
+  width: 100%;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .navbar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: row;
+  gap: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 1rem 20px; /* Aligns with .grid padding */
 }
 
 .navbar-brand {
   cursor: pointer;
   display: flex;
   align-items: center;
-  transition: transform 0.2s ease;
+  transition: opacity 0.2s ease;
+}
+
+.navbar-brand:hover {
+  opacity: 0.9;
 }
 
 .navbar-brand h1 {
   color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-  letter-spacing: 0.5px;
-}
-
-.navbar-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  padding: 0.75rem 1.5rem;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  border-radius: 25px;
+  /* Matches the app.css h1 font stack but smaller for a nav bar */
+  font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.75rem;
   font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  margin: 0;
+  letter-spacing: -0.05rem;
 }
 
-.navbar-link:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-color: rgba(255, 255, 255, 0.5);
+.navbar-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-weight: 400;
 }
 
-.home-icon {
-  font-size: 1.2rem;
-}
-
-.home-text {
-  display: inline-block;
+/* Ensure navbar scales correctly on mobile like your grid */
+@media (max-width: 600px) {
+  .navbar-container {
+    padding: 1rem;
+  }
+  .navbar-brand h1 {
+    font-size: 1.4rem;
+  }
+  .navbar-subtitle {
+    display: none;
+  }
 }

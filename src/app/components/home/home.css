@@ -328,3 +328,57 @@ input:checked + .slider:before {
 input:focus + .slider {
   box-shadow: 0 0 1px #764ba2;
 }
+
+.btn-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px
+}
+
+.add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left;
+    margin-top: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.checkbox-group {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+/* Ensure the Add button matches your theme */
+.btn-primary {
+    background-color: #764ba2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

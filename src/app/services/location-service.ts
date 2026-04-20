@@ -1,9 +1,16 @@
 import { Injectable, InjectionToken } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, last, Observable } from "rxjs";
 import { HousingLocationInfo } from "@models/housing-location";
 
 export const BASE_URL = new InjectionToken<string>('base url', {providedIn: 'root', factory: () => 'string'})
+
+type AddLocationObject = {
+  name: string;
+  img: string;
+  properties?: ("wifi" | "ac" | "garage")[];
+  isActive: boolean;
+}
 
 @Injectable({
     providedIn: 'root',
@@ -33,6 +40,7 @@ export class LocationService {
         try {
           const locations = JSON.parse(cachedData);
           this.locationsSubject.next(locations);
+          return locations;
         } catch (e) {
           console.error('Error parsing cached locations:', e);
           this.fetchLocationsFromJson();
@@ -40,6 +48,7 @@ export class LocationService {
       } else {
         this.fetchLocationsFromJson();
       }
+      
     }
 
     private fetchLocationsFromJson(): void {
@@ -117,5 +126,27 @@ export class LocationService {
         this.deleteLocation(id);
       });
       this.clearSelection();
+    }
+
+    addLocation(newLocation: AddLocationObject): void {
+      const currentLocations= this.locationsSubject.value;
+      const maxId = currentLocations.length > 0 
+    ? Math.max(...currentLocations.map(loc => loc.id)) 
+    : 0;
+
+      const newEntry: HousingLocationInfo = {
+        id: maxId + 1,
+        name: newLocation.name,
+        img: newLocation.img,
+        isActive: true
+      };
+
+      const updatedLocations = [...currentLocations, newEntry];
+      this.locationsSubject.next(updatedLocations);
+      this.saveToLocalStorage(updatedLocations); 
+    }
+
+    addLocations(newLocations: AddLocationObject[]): void {
+      newLocations.forEach(loc => this.addLocation(loc));
     }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, ElementRef, signal, computed, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
@@ -6,23 +6,38 @@ import { takeUntil } from 'rxjs/operators';
 import { HousingLocation } from '@components/housing-location/housing-location';
 import { HousingLocationInfo } from '@models/housing-location';
 import { LocationService } from '@services/location-service';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [HousingLocation, CommonModule],
+  imports: [HousingLocation, CommonModule, ReactiveFormsModule],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 
 export class Home implements OnInit, OnDestroy {
   router: Router = inject(Router);
+
   locationService: LocationService = inject(LocationService);
+
   mode = signal<'Normal' | 'Edit Mode'>('Normal');
   housingLocations = signal<HousingLocationInfo[]>([]);
+  
   showDeletedOnly = signal<boolean>(false);
+
   selectedLocationIds = signal<Set<number>>(new Set());
+  private fb = inject(FormBuilder);
+  addLocationForm = this.fb.group({
+    name: ['', Validators.required],
+    img: ['', Validators.required],
+    wifi: [false],
+    ac: [false],
+    garage: [false]
+  });
+
   showDeleteConfirmation = signal<boolean>(false);
+  showAddDialog = signal<boolean>(false);
   
   private destroy$ = new Subject<void>();
 
@@ -101,5 +116,34 @@ export class Home implements OnInit, OnDestroy {
 
   restoreLocation(location: HousingLocationInfo) {
     this.locationService.restoreLocation(location.id);
+  }
+
+  handleAddition() {
+    this.showAddDialog.set(true);
+  }
+
+  confirmAddition() {
+    if(this.addLocationForm.valid) {
+      const val = this.addLocationForm.value;
+
+      const properties: ("wifi" | "ac" | "garage")[] = [];
+      if (val.wifi) properties.push("wifi");
+      if (val.ac) properties.push("ac");
+      if (val.garage) properties.push("garage");
+
+      const newLocation: any = {
+        name: val.name,
+        img: val.img,
+        properties: properties,
+      };
+
+      this.locationService.addLocations([newLocation]);
+      this.cancelAddition();
+    }
+  }
+
+  cancelAddition() {
+    this.showAddDialog.set(false);
+    this.addLocationForm.reset();
   }
 }
