@@ -1,7 +1,6 @@
 import { Injectable, InjectionToken } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable } from "rxjs";
-import { tap } from "rxjs/operators";
 import { HousingLocationInfo } from "@models/housing-location";
 
 export const BASE_URL = new InjectionToken<string>('base url', {providedIn: 'root', factory: () => 'string'})
@@ -43,9 +42,6 @@ export class LocationService {
       }
     }
 
-    /**
-     * Fetch locations from the JSON file and cache in localStorage
-     */
     private fetchLocationsFromJson(): void {
       this.http.get<HousingLocationInfo[]>('assets/data/locations.json').subscribe({
         next: (data) => {
@@ -59,9 +55,6 @@ export class LocationService {
       });
     }
 
-    /**
-     * Save locations to localStorage
-     */
     private saveToLocalStorage(locations: HousingLocationInfo[]): void {
       localStorage.setItem(this.storageKey, JSON.stringify(locations));
     }
@@ -78,34 +71,6 @@ export class LocationService {
       return this.locationsSubject.value.find(location => location.id === id);
     }
 
-    /**
-     * Update a location and persist changes
-     */
-    updateLocation(location: HousingLocationInfo): void {
-      const locations = this.locationsSubject.value;
-      const index = locations.findIndex(loc => loc.id === location.id);
-      if (index !== -1) {
-        locations[index] = location;
-        this.locationsSubject.next([...locations]);
-        this.saveToLocalStorage(locations);
-      }
-    }
-
-    /**
-     * Add a new location and persist changes
-     */
-    addLocation(location: Omit<HousingLocationInfo, 'id' | 'isActive'>): void {
-      const locations = this.locationsSubject.value;
-      const newId = Math.max(...locations.map(l => l.id), 0) + 1;
-      const newLocation: HousingLocationInfo = { ...location, id: newId, isActive: true } as HousingLocationInfo;
-      locations.push(newLocation);
-      this.locationsSubject.next([...locations]);
-      this.saveToLocalStorage(locations);
-    }
-
-    /**
-     * Soft delete a location (set isActive to false) and persist changes
-     */
     deleteLocation(id: number): void {
       const locations = this.locationsSubject.value;
       const index = locations.findIndex(loc => loc.id === id);
@@ -116,9 +81,6 @@ export class LocationService {
       }
     }
 
-    /**
-     * Restore a deleted location (set isActive to true)
-     */
     restoreLocation(id: number): void {
       const locations = this.locationsSubject.value;
       const index = locations.findIndex(loc => loc.id === id);
@@ -129,41 +91,26 @@ export class LocationService {
       }
     }
 
-    /**
-     * Select a location by ID
-     */
     selectLocation(id: number): void {
       const selected = new Set(this.selectedLocationIdsSubject.value);
       selected.add(id);
       this.selectedLocationIdsSubject.next(selected);
     }
 
-    /**
-     * Deselect a location by ID
-     */
     deselectLocation(id: number): void {
       const selected = new Set(this.selectedLocationIdsSubject.value);
       selected.delete(id);
       this.selectedLocationIdsSubject.next(selected);
     }
 
-    /**
-     * Clear all selected locations
-     */
     clearSelection(): void {
       this.selectedLocationIdsSubject.next(new Set());
     }
 
-    /**
-     * Get the set of selected location IDs
-     */
     getSelectedLocationIds(): Set<number> {
       return this.selectedLocationIdsSubject.value;
     }
 
-    /**
-     * Delete all selected locations and clear selection
-     */
     deleteSelectedLocations(): void {
       const selectedIds = this.selectedLocationIdsSubject.value;
       selectedIds.forEach(id => {

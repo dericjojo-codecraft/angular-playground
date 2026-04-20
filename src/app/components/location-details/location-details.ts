@@ -47,9 +47,15 @@ export class LocationDetails implements OnInit, OnDestroy {
     if (this.location()) {
       const locations = this.allLocations();
       const currentIndex = locations.findIndex(loc => loc.id === this.location()!.id);
-      if (currentIndex > 0) {
-        const prevLocation = locations[currentIndex - 1];
-        this.router.navigate(['/details', prevLocation.id]);
+      let prevIndex = currentIndex - 1;
+
+      while (prevIndex >= 0) {
+        if (locations[prevIndex].isActive) {
+          this.router.navigate(['/details', locations[prevIndex].id]);
+          break;
+        } else {
+          prevIndex -= 1;
+        }
       }
     }
   }
@@ -58,9 +64,15 @@ export class LocationDetails implements OnInit, OnDestroy {
     if (this.location()) {
       const locations = this.allLocations();
       const currentIndex = locations.findIndex(loc => loc.id === this.location()!.id);
-      if (currentIndex < locations.length - 1) {
-        const nextLocation = locations[currentIndex + 1];
-        this.router.navigate(['/details', nextLocation.id]);
+      let nextIndex = currentIndex + 1;
+
+      while (nextIndex < locations.length) {
+        if (locations[nextIndex].isActive) {
+          this.router.navigate(['/details', locations[nextIndex].id]);
+          break;
+        } else {
+          nextIndex += 1;
+        }
       }
     }
   }

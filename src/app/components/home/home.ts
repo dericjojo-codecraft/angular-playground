@@ -16,12 +16,13 @@ import { LocationService } from '@services/location-service';
 })
 
 export class Home implements OnInit, OnDestroy {
-  router: Router = new Router();
+  router: Router = inject(Router);
   locationService: LocationService = inject(LocationService);
   mode = signal<'Normal' | 'Edit Mode'>('Normal');
   housingLocations = signal<HousingLocationInfo[]>([]);
   showDeletedOnly = signal<boolean>(false);
   selectedLocationIds = signal<Set<number>>(new Set());
+  showDeleteConfirmation = signal<boolean>(false);
   
   private destroy$ = new Subject<void>();
 
@@ -38,14 +39,12 @@ export class Home implements OnInit, OnDestroy {
   );
 
   ngOnInit() {
-    // Subscribe to location updates from the service
     this.locationService.getAllLocations$()
       .pipe(takeUntil(this.destroy$))
       .subscribe(locations => {
         this.housingLocations.set(locations);
       });
 
-    // Subscribe to selected location IDs from the service
     this.locationService.selectedLocationIds$
       .pipe(takeUntil(this.destroy$))
       .subscribe(selectedIds => {
@@ -63,7 +62,6 @@ export class Home implements OnInit, OnDestroy {
       if (this.mode() === 'Normal') {
         this.router.navigate([`/details/${location.id}`]);
       } else {
-        // Toggle selection via service
         if (this.selectedLocationIds().has(location.id)) {
           this.locationService.deselectLocation(location.id);
         } else {
@@ -82,10 +80,19 @@ export class Home implements OnInit, OnDestroy {
 
   handleDelete() {
     if(this.selectedLocationIds().size > 0) {
-      this.locationService.deleteSelectedLocations();
+      this.showDeleteConfirmation.set(true);
     } else {
       alert("Select at least one location")
     }
+  }
+
+  confirmDelete() {
+    this.locationService.deleteSelectedLocations();
+    this.showDeleteConfirmation.set(false);
+  }
+
+  cancelDelete() {
+    this.showDeleteConfirmation.set(false);
   }
 
   toggleDeletedView() {

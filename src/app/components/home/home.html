@@ -1,46 +1,81 @@
 <section class="grid-container">
-    <div id="mode-checkbox" (change)="handleCheckbox()">
-        <p>{{ mode() }}</p>
-        <input type="checkbox"/>
+    <div class="header-section">
+        <h1>Housing Locations</h1>
+        <div class="mode-toggle">
+            <span class="toggle-label">Normal Mode</span>
+            <label class="toggle-switch">
+                <input type="checkbox" (change)="handleCheckbox()" />
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-label">Edit Mode</span>
+        </div>
     </div>
+
     @if(mode() == "Edit Mode") {
-        <button (click)="handleDelete()">Delete Selected</button>
+        <button (click)="handleDelete()" class="btn btn-danger">Delete Selected</button>
     }
-    <h1>All Locations</h1>
-    <div class="grid">
-        @if(activeLocations().length > 0) {
-            @for (housingLocation of activeLocations(); track housingLocation.id) {
-                <app-housing-location
-                    [location]="housingLocation"
-                    [isSelected]="selectedLocationIds().has(housingLocation.id)"
-                    (onLocationClick)="handleLocationClicked($event)"
-                />
-            }
-        } @else {
-            <h2> No items available </h2>
-        }
-    </div>
-    <button (click)="toggleDeletedView()">
-        {{ deletedButtonMessage() }}
-    </button>
-    @if(showDeletedOnly()) {
+
+    <div class="locations-section">
+        <h2>Active Locations</h2>
         <div class="grid">
-            @if(deletedLocations().length > 0) {
-                @for (housingLocation of deletedLocations(); track housingLocation.id) {
-                    <div style="position: relative;">
-                        <app-housing-location
-                            [location]="housingLocation"
-                            [isSelected]="false"
-                            (onLocationClick)="handleLocationClicked($event)"
-                        />
-                        <button (click)="restoreLocation(housingLocation)" style="margin-top: 8px; width: 100%;">
-                            Restore
-                        </button>
-                    </div>
+            @if(activeLocations().length > 0) {
+                @for (housingLocation of activeLocations(); track housingLocation.id) {
+                    <app-housing-location
+                        [location]="housingLocation"
+                        [isSelected]="selectedLocationIds().has(housingLocation.id)"
+                        (onLocationClick)="handleLocationClicked($event)"
+                    />
                 }
             } @else {
-                <h2> No deleted locations </h2>
+                <div class="empty-state">
+                    <p>No active locations available</p>
+                </div>
             }
         </div>
+    </div>
+
+    @if(mode() == "Edit Mode") {
+        <button (click)="toggleDeletedView()" class="btn btn-secondary">
+            {{ deletedButtonMessage() }}
+        </button>
+        @if(showDeletedOnly()) {
+            <div class="locations-section">
+                <h2>Deleted Locations</h2>
+                <div class="grid">
+                    @if(deletedLocations().length > 0) {
+                        @for (housingLocation of deletedLocations(); track housingLocation.id) {
+                            <div class="location-card-wrapper">
+                                <app-housing-location
+                                    [location]="housingLocation"
+                                    [isSelected]="false"
+                                    (onLocationClick)="handleLocationClicked($event)"
+                                />
+                                <button (click)="restoreLocation(housingLocation)" class="btn btn-secondary btn-small">
+                                    Restore
+                                </button>
+                            </div>
+                        }
+                    } @else {
+                        <div class="empty-state">
+                            <p>No deleted locations</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }   
     }
 </section>
+
+@if(showDeleteConfirmation()) {
+    <div class="confirmation-overlay">
+        <div class="confirmation-dialog">
+            <h2>Confirm Deletion</h2>
+            <p>Are you sure you want to delete {{ selectedLocationIds().size }} selected location(s)?</p>
+            <p style="font-size: 0.9rem; color: #666;">This action cannot be undone.</p>
+            <div class="confirmation-buttons">
+                <button (click)="confirmDelete()" class="btn btn-danger">Delete</button>
+                <button (click)="cancelDelete()" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+}

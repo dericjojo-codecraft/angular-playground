@@ -18,6 +18,7 @@ h1 {
     padding: 1rem;
     box-sizing: inherit;
     position: relative;
+    flex: 1;
   }
 
   .content {
@@ -27,6 +28,7 @@ h1 {
     width: 100%;
     margin-bottom: 3rem;
     flex-direction: column;
+    min-height: 100%;
   }
 
   .content h1 {
@@ -35,4 +37,27 @@ h1 {
 
   .content p {
     margin-top: 1.5rem;
+  }
+
+  .footer {
+    margin-top: auto; 
+    padding: 2rem 0;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .footer-line {
+    margin: 0.25rem 0;
+    font-size: 0.875rem;
+    color: #666;
+    font-family: "Inter Tight", sans-serif;
+  }
+
+  .footer-line:first-child {
+    font-weight: 600;
+  }
+
+  .footer-line:last-child {
+    font-weight: 300;
   }
