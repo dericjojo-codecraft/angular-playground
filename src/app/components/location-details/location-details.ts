@@ -1,5 +1,7 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { HousingLocationInfo } from '@models/housing-location';
 import { LocationService } from '@services/location-service';
 
@@ -9,30 +11,44 @@ import { LocationService } from '@services/location-service';
   templateUrl: './location-details.html',
   styleUrl: './location-details.css',
 })
-export class LocationDetails implements OnInit {
+export class LocationDetails implements OnInit, OnDestroy {
   route: ActivatedRoute = inject(ActivatedRoute);
   router: Router = inject(Router);
   
   locationService: LocationService = inject(LocationService);
   location = signal<HousingLocationInfo | undefined>(undefined);
-  allLocations = this.locationService.getAllLocations();
+  allLocations = signal<HousingLocationInfo[]>([]);
+  private destroy$ = new Subject<void>();
   
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      const id = Number(params['id']);
-      this.location.set(this.locationService.getLocationById(id));
-    });
+    // Load all locations
+    this.locationService.getAllLocations$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(locations => {
+        this.allLocations.set(locations);
+      });
+
+    // Load current location from route params
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const id = Number(params['id']);
+        this.location.set(this.locationService.getLocationById(id));
+      });
   }
 
   ngOnDestroy() {
-    console.log("Instances are destroyed");
+    this.destroy$.next();
+    this.destroy$.complete();
+    console.log("Location details component destroyed");
   }
 
   goToPrevious() {
     if (this.location()) {
-      const currentIndex = this.allLocations.findIndex(loc => loc.id === this.location()!.id);
+      const locations = this.allLocations();
+      const currentIndex = locations.findIndex(loc => loc.id === this.location()!.id);
       if (currentIndex > 0) {
-        const prevLocation = this.allLocations[currentIndex - 1];
+        const prevLocation = locations[currentIndex - 1];
         this.router.navigate(['/details', prevLocation.id]);
       }
     }
@@ -40,9 +56,10 @@ export class LocationDetails implements OnInit {
 
   goToNext() {
     if (this.location()) {
-      const currentIndex = this.allLocations.findIndex(loc => loc.id === this.location()!.id);
-      if (currentIndex < this.allLocations.length - 1) {
-        const nextLocation = this.allLocations[currentIndex + 1];
+      const locations = this.allLocations();
+      const currentIndex = locations.findIndex(loc => loc.id === this.location()!.id);
+      if (currentIndex < locations.length - 1) {
+        const nextLocation = locations[currentIndex + 1];
         this.router.navigate(['/details', nextLocation.id]);
       }
     }
@@ -50,13 +67,15 @@ export class LocationDetails implements OnInit {
 
   hasPrevious(): boolean {
     if (!this.location()) return false;
-    const currentIndex = this.allLocations.findIndex(loc => loc.id === this.location()!.id);
+    const locations = this.allLocations();
+    const currentIndex = locations.findIndex(loc => loc.id === this.location()!.id);
     return currentIndex > 0;
   }
 
   hasNext(): boolean {
     if (!this.location()) return false;
-    const currentIndex = this.allLocations.findIndex(loc => loc.id === this.location()!.id);
-    return currentIndex < this.allLocations.length - 1;
+    const locations = this.allLocations();
+    const currentIndex = locations.findIndex(loc => loc.id === this.location()!.id);
+    return currentIndex < locations.length - 1;
   }
 }

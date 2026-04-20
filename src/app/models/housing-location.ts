@@ -3,4 +3,5 @@ export type HousingLocationInfo = {
   name: string;
   img: string;
   properties?: ("wifi" | "ac" | "garage")[];
+  isActive: boolean;
 }

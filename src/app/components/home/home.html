@@ -8,36 +8,39 @@
     }
     <h1>All Locations</h1>
     <div class="grid">
-        @if(locationService.housingLocations) {
-            @for (housingLocation of locationService.housingLocations; track $index) {
-                @if(!deletedLocations.includes(housingLocation)) {
-                    <app-housing-location
-                        [location]="housingLocation"
-                        [isSelected]="selectedLocations.some(loc => loc.id === housingLocation.id)"
-                        (onLocationClick)="handleLocationClicked($event)"
-                    />
-                }
-            } @empty {
-                <h2> No items available </h2>
-            }
-        } @else {
-            <h2>No Locations Available</h2>
-        }
-    </div>
-    <button>
-        {{ deletedButtonMessage() }}
-    </button>
-    @if(deletedLocations) {
-        @for (housingLocation of locationService.housingLocations; track $index) {
-            @if(deletedLocations.includes(housingLocation)) {
+        @if(activeLocations().length > 0) {
+            @for (housingLocation of activeLocations(); track housingLocation.id) {
                 <app-housing-location
                     [location]="housingLocation"
-                    [isSelected]="deletedLocations.some(loc => loc.id === housingLocation.id)"
+                    [isSelected]="selectedLocations.some(loc => loc.id === housingLocation.id)"
                     (onLocationClick)="handleLocationClicked($event)"
                 />
             }
-        } @empty {
+        } @else {
             <h2> No items available </h2>
         }
+    </div>
+    <button (click)="toggleDeletedView()">
+        {{ deletedButtonMessage() }}
+    </button>
+    @if(showDeletedOnly()) {
+        <div class="grid">
+            @if(deletedLocations().length > 0) {
+                @for (housingLocation of deletedLocations(); track housingLocation.id) {
+                    <div style="position: relative;">
+                        <app-housing-location
+                            [location]="housingLocation"
+                            [isSelected]="false"
+                            (onLocationClick)="handleLocationClicked($event)"
+                        />
+                        <button (click)="restoreLocation(housingLocation)" style="margin-top: 8px; width: 100%;">
+                            Restore
+                        </button>
+                    </div>
+                }
+            } @else {
+                <h2> No deleted locations </h2>
+            }
+        </div>
     }
 </section>
