@@ -15,6 +15,8 @@ export class LocationService {
     private readonly storageKey = 'housingLocations';
     private locationsSubject = new BehaviorSubject<HousingLocationInfo[]>([]);
     public locations$ = this.locationsSubject.asObservable();
+    private selectedLocationIdsSubject = new BehaviorSubject<Set<number>>(new Set());
+    public selectedLocationIds$ = this.selectedLocationIdsSubject.asObservable();
 
     constructor(private http: HttpClient) {
         LocationService.numberOfInstances += 1;
@@ -25,10 +27,7 @@ export class LocationService {
     ngOnDestroy() {
       LocationService.numberOfInstances = 0;
     }
-
-    /**
-     * Load locations from localStorage if available, otherwise fetch from JSON file
-     */
+    
     private loadLocations(): void {
       const cachedData = localStorage.getItem(this.storageKey);
       if (cachedData) {
@@ -128,5 +127,48 @@ export class LocationService {
         this.locationsSubject.next([...locations]);
         this.saveToLocalStorage(locations);
       }
+    }
+
+    /**
+     * Select a location by ID
+     */
+    selectLocation(id: number): void {
+      const selected = new Set(this.selectedLocationIdsSubject.value);
+      selected.add(id);
+      this.selectedLocationIdsSubject.next(selected);
+    }
+
+    /**
+     * Deselect a location by ID
+     */
+    deselectLocation(id: number): void {
+      const selected = new Set(this.selectedLocationIdsSubject.value);
+      selected.delete(id);
+      this.selectedLocationIdsSubject.next(selected);
+    }
+
+    /**
+     * Clear all selected locations
+     */
+    clearSelection(): void {
+      this.selectedLocationIdsSubject.next(new Set());
+    }
+
+    /**
+     * Get the set of selected location IDs
+     */
+    getSelectedLocationIds(): Set<number> {
+      return this.selectedLocationIdsSubject.value;
+    }
+
+    /**
+     * Delete all selected locations and clear selection
+     */
+    deleteSelectedLocations(): void {
+      const selectedIds = this.selectedLocationIdsSubject.value;
+      selectedIds.forEach(id => {
+        this.deleteLocation(id);
+      });
+      this.clearSelection();
     }
 }

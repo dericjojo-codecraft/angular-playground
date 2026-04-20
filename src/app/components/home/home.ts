@@ -21,8 +21,8 @@ export class Home implements OnInit, OnDestroy {
   mode = signal<'Normal' | 'Edit Mode'>('Normal');
   housingLocations = signal<HousingLocationInfo[]>([]);
   showDeletedOnly = signal<boolean>(false);
+  selectedLocationIds = signal<Set<number>>(new Set());
   
-  selectedLocations: HousingLocationInfo[] = [];
   private destroy$ = new Subject<void>();
 
   deletedButtonMessage = computed(() => 
@@ -44,6 +44,13 @@ export class Home implements OnInit, OnDestroy {
       .subscribe(locations => {
         this.housingLocations.set(locations);
       });
+
+    // Subscribe to selected location IDs from the service
+    this.locationService.selectedLocationIds$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(selectedIds => {
+        this.selectedLocationIds.set(selectedIds);
+      });
   }
 
   ngOnDestroy() {
@@ -56,12 +63,11 @@ export class Home implements OnInit, OnDestroy {
       if (this.mode() === 'Normal') {
         this.router.navigate([`/details/${location.id}`]);
       } else {
-        const index = this.selectedLocations.findIndex(loc => loc.id === location.id);
-
-        if (index !== -1) {
-          this.selectedLocations.splice(index, 1);  // Remove
+        // Toggle selection via service
+        if (this.selectedLocationIds().has(location.id)) {
+          this.locationService.deselectLocation(location.id);
         } else {
-          this.selectedLocations.push(location);    // Add
+          this.locationService.selectLocation(location.id);
         }
       }
     }
@@ -69,17 +75,14 @@ export class Home implements OnInit, OnDestroy {
 
   handleCheckbox() {
     this.mode.update(prev => prev === 'Normal' ? 'Edit Mode' : 'Normal');
-    this.selectedLocations = []; 
+    this.locationService.clearSelection();
 
     console.log("Mode toggled to", this.mode());
   }
 
   handleDelete() {
-    if(this.selectedLocations.length) {
-      this.selectedLocations.forEach(loc => {
-        this.locationService.deleteLocation(loc.id);
-      });
-      this.selectedLocations = [];
+    if(this.selectedLocationIds().size > 0) {
+      this.locationService.deleteSelectedLocations();
     } else {
       alert("Select at least one location")
     }

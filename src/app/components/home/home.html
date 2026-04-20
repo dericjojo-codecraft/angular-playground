@@ -12,7 +12,7 @@
             @for (housingLocation of activeLocations(); track housingLocation.id) {
                 <app-housing-location
                     [location]="housingLocation"
-                    [isSelected]="selectedLocations.some(loc => loc.id === housingLocation.id)"
+                    [isSelected]="selectedLocationIds().has(housingLocation.id)"
                     (onLocationClick)="handleLocationClicked($event)"
                 />
             }
