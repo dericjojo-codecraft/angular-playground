@@ -5,3 +5,7 @@ export type HousingLocationInfo = {
   properties?: ("wifi" | "ac" | "garage")[];
   isActive: boolean;
 }
+
+export interface HousingLocationViewModel extends HousingLocationInfo {
+  selected: boolean;
+}

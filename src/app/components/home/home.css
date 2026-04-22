@@ -382,3 +382,10 @@ input:focus + .slider {
     background-color: #ccc;
     cursor: not-allowed;
 }
+
+.location-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}

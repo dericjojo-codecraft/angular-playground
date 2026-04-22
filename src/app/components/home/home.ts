@@ -35,9 +35,18 @@ export class Home implements OnInit, OnDestroy {
     ac: [false],
     garage: [false]
   });
+  updateLocationForm = this.fb.group({
+    name: ['', Validators.required],
+    img: ['', Validators.required],
+    wifi: [false],
+    ac: [false],
+    garage: [false]
+  });
 
   showDeleteConfirmation = signal<boolean>(false);
   showAddDialog = signal<boolean>(false);
+  showUpdateDialog = signal<boolean>(false);
+  editingLocationId = signal<number | null>(null);
   
   private destroy$ = new Subject<void>();
 
@@ -93,6 +102,8 @@ export class Home implements OnInit, OnDestroy {
     console.log("Mode toggled to", this.mode());
   }
 
+
+  // deletion functions
   handleDelete() {
     if(this.selectedLocationIds().size > 0) {
       this.showDeleteConfirmation.set(true);
@@ -114,10 +125,13 @@ export class Home implements OnInit, OnDestroy {
     this.showDeletedOnly.update(prev => !prev);
   }
 
+  // restore function
   restoreLocation(location: HousingLocationInfo) {
     this.locationService.restoreLocation(location.id);
   }
 
+
+  // addition functions
   handleAddition() {
     this.showAddDialog.set(true);
   }
@@ -145,5 +159,45 @@ export class Home implements OnInit, OnDestroy {
   cancelAddition() {
     this.showAddDialog.set(false);
     this.addLocationForm.reset();
+  }
+
+
+  // updation functions
+  handleUpdatation(location: HousingLocationInfo) {
+    this.showUpdateDialog.set(true);
+    this.editingLocationId.set(location.id);
+    this.updateLocationForm.patchValue({
+      name: location.name,
+      img: location.img,
+      wifi: location.properties?.includes('wifi') ?? false,
+      ac: location.properties?.includes('ac') ?? false,
+      garage: location.properties?.includes('garage') ?? false,
+    });
+  }
+
+  confirmUpdatation() {
+    if(this.updateLocationForm.valid) {
+      const val = this.updateLocationForm.value;
+
+      const properties: ("wifi" | "ac" | "garage")[] = [];
+      if (val.wifi) properties.push("wifi");
+      if (val.ac) properties.push("ac");
+      if (val.garage) properties.push("garage");
+
+      const udpatedLocation: any = {
+        id: this.editingLocationId(), 
+        name: val.name,
+        img: val.img || "",
+        properties: properties,
+      };
+
+      this.locationService.udpateLocation(udpatedLocation);
+      this.cancelUpdation();
+    }
+  }
+
+  cancelUpdation() {
+    this.showUpdateDialog.set(false);
+    this.updateLocationForm.reset();
   }
 }

@@ -1,0 +1,44 @@
+<div class="user-profile">
+  <h1>User Dashboard</h1>
+  <div class="status-indicator" [class]="userStatus()">
+    <span class="status-dot"></span>
+    Status: {{ userStatus() }}
+  </div>
+
+  <div class="status-info">
+    <div class="notifications">
+      <strong>Notifications:</strong>
+      @if(notificationPreference()) {
+        Enabled
+      } @else {
+        Disabled
+      }
+    </div>
+    <div class="message">
+      <strong>Message:</strong>
+      @if(userStatus() === "online") {
+        Feel free to reach out!
+      } @else if (userStatus() === "away") {
+        Currently away. Try again in a bit.
+      } @else if (userStatus() === "offline") {
+        Currently unavailable. Try again tomorrow.  
+      }
+    </div>
+    <div class="working-hours">
+      <strong>Within Working Hours:</strong>
+      @if(isWithinWorkingHours()) {
+        Yes
+      } @else {
+        No
+      }
+    </div>
+  </div>
+
+  <div class="status-controls">
+    <button (click)="goOnline()" [disabled]="userStatus() === 'online'">Go Online</button>
+    <button (click)="goAway()" [disabled]="userStatus() === 'away'">Set Away</button>
+    <button (click)="goOffline()" [disabled]="userStatus() === 'offline'">Go Offline</button>
+    <button (click)="toggleStatus()" class="toggle-btn">Cycle Status</button>
+  </div>
+  <app-shipping-options></app-shipping-options>
+</div>

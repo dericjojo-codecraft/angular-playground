@@ -11,6 +11,7 @@ import { LocationService } from '@services/location-service';
   templateUrl: './location-details.html',
   styleUrl: './location-details.css',
 })
+
 export class LocationDetails implements OnInit, OnDestroy {
   route: ActivatedRoute = inject(ActivatedRoute);
   router: Router = inject(Router);

@@ -1,0 +1,13 @@
+<div id="main">
+    <select id="selection">
+        <option>Ground</option>
+        <option>Sea</option>
+        <option>Air</option>
+    </select>
+
+    {{ shippingSelection() }}
+    
+    <input id="input"/>
+
+    <button id="btn" (click)="changeShippingOptions()">Change shipping option</button>
+</div>

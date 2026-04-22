@@ -1,6 +1,6 @@
 import { Injectable, InjectionToken } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, last, Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { HousingLocationInfo } from "@models/housing-location";
 
 export const BASE_URL = new InjectionToken<string>('base url', {providedIn: 'root', factory: () => 'string'})
@@ -148,5 +148,21 @@ export class LocationService {
 
     addLocations(newLocations: AddLocationObject[]): void {
       newLocations.forEach(loc => this.addLocation(loc));
+    }
+
+    udpateLocation(location: HousingLocationInfo) {
+      const currentLocations = this.locationsSubject.value;
+      const updatedEntry: HousingLocationInfo = {
+        id: location.id,
+        img: location.img,
+        isActive: true,
+        name: location.name,
+        properties: location.properties ? location.properties : [],
+      }
+
+      const updatedLocations = currentLocations.map(loc => loc.id === location.id ? updatedEntry : loc);
+
+      this.locationsSubject.next(updatedLocations);
+      this.saveToLocalStorage(updatedLocations  );
     }
 }
