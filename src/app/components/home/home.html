@@ -1,6 +1,7 @@
 <section class="grid-container">
     <div class="header-section">
         <h1>Housing Locations</h1>
+        <div (click)="openLocationForm()"><h1>OPEN FORM</h1></div>
         <div class="mode-toggle">
             <span class="toggle-label">Normal Mode</span>
             <label class="toggle-switch">
@@ -12,7 +13,13 @@
     </div>
 
     @if(mode() == "Edit Mode") {
-        <div class="btn-container">        
+        <div class="btn-container">
+            <button (click)="toggleAddView()" class="btn btn-primary">
+            Add New Location
+             </button>
+            @if(showAddOnly()) {
+                <p>ADD FORM HERE?</p>
+            }
             <button (click)="handleDelete()" class="btn btn-secondary">Delete Selected</button>
         </div>
     }
@@ -45,7 +52,7 @@
         <button (click)="toggleDeletedView()" class="btn btn-secondary">
             {{ deletedButtonMessage() }}
         </button>
-        @if(showDeletedOnly()) {
+        @if(showAddOnly()) {
             <div class="locations-section">
                 <h2>Deleted Locations</h2>
                 <div class="grid">
@@ -87,3 +94,4 @@
         </div>
     </div>
 }
+<router-outlet></router-outlet>

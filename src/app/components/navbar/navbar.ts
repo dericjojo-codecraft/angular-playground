@@ -10,7 +10,13 @@ import { Router } from '@angular/router';
 export class Navbar {
   router: Router = inject(Router);
 
-  handleNavClick() {
-    this.router.navigate(['/']);
+  goHome() {
+    this.router.navigate(['home']);
+  }
+  goToSignalDemo() {
+    this.router.navigate(['linked-signal']);
+  }
+  goToFormDemo() {
+    this.router.navigate(['form']);
   }
 }

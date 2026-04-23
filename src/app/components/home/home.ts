@@ -2,11 +2,11 @@ import { Component, computed, inject, linkedSignal, signal } from '@angular/core
 import { HousingLocation } from '../housing-location/housing-location';
 import { HousingLocationInfo } from '@models/housing-location';
 import { BASE_URL, LocationService } from '@services/location-service';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [HousingLocation],
+  imports: [HousingLocation, RouterOutlet],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -80,12 +80,16 @@ export class Home {
     }
   }
 
-  addHousingLocation() {
+  showAddOnly = signal<boolean>(false);
+  toggleAddView() {
+    this.showAddOnly.update(prev => !prev);
+  }
 
+  handleAddition() {
     console.log("Starting to add housing location...")
 
     const data: HousingLocationInfo = {
-      id: 0,
+      id: 10,
       name: 'Codecraft',
       city: 'Mangalore',
       state: 'Karnataka',
@@ -97,12 +101,16 @@ export class Home {
     this.locationService.addLocation(data)
   }
 
+  showDeletedOnly = signal<boolean>(false);
   toggleDeletedView() {
     this.showDeletedOnly.update(prev => !prev);
   }
-  showDeletedOnly = signal<boolean>(false);
 
   deletedButtonMessage = computed(() => 
     this.showDeletedOnly() ? "Hide Deleted Locations ^" : "See Deleted Locations V"
   );
+
+  openLocationForm() {
+    this.router.navigate(['home', 'edit', 'form'])
+  }
 }

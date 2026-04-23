@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HousingLocationInfo } from '@models/housing-location';
 import { LocationService } from '@services/location-service';
@@ -14,17 +14,15 @@ export class LocationDetails {
   route: ActivatedRoute = inject(ActivatedRoute);
   router: Router = inject(Router);
   
+  id = input.required<string>();
+
   locationService: LocationService = inject(LocationService);
   location = signal<HousingLocationInfo | undefined>(undefined);
   allLocations = this.locationService.getAllLocations();
 
   ngOnInit() {
-    this.route.params.subscribe((params) => {
-      const id = Number(params['id']);
-      const fetchedLocation = this.locationService.getLocationForId(id);
-      
-      this.location.set(fetchedLocation);
-    });
+    const fetchedLocation = this.locationService.getLocationForId(Number(this.id()));
+    this.location.set(fetchedLocation);
   }
 
   goToPrevious() {

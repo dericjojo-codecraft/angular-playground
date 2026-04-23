@@ -2,9 +2,7 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  position: relative;
 }
 
 .navbar-container {
@@ -56,4 +54,8 @@
   .navbar-subtitle {
     display: none;
   }
+}
+
+.navbar-child {
+  color: white
 }

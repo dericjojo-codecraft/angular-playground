@@ -1,0 +1,50 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: flex-end;
+
+    opacity: 0;
+    
+    /* Hide the overlay by default so you can click the home page */
+    pointer-events: none; 
+    background: linear-gradient(0.25turn, rgba(32, 32, 32, 0.6), rgba(32, 32, 32, 1));
+    transition: background-color 0.3s ease;
+}
+
+.show-overlay {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+.panel {
+    position: fixed;
+    height: 100vh;
+    width: 30vw;
+    background-color: rgb(255, 255, 255);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+    top: 0;
+    right: 0;
+    overflow-y: auto;
+}
+
+.show-panel {
+    transform: translateX(0);
+}
+
+#close-panel-btn {
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    right: 10px;
+    z-index: 1001;
+}

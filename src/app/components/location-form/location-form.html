@@ -1,0 +1,8 @@
+
+// TODO: click only for overlay
+<div id="overlay-click" (click)="overlayClick()" class="overlay" [class.show-overlay]="panelClass()">  
+    <div class="panel" [class.show-panel]="panelClass()">
+        <div id="close-panel-btn" (click)="hidePanel()">X</div> 
+        <router-outlet></router-outlet>
+    </div>
+</div>

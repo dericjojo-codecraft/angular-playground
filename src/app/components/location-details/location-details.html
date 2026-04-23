@@ -1,17 +1,26 @@
 <div class="details-container">
-  <button
-    class="nav-button" id="nav-prev"
-    (click)="goToPrevious()"
-    [disabled]="!hasPrevious()">
-    ‹
-  </button>
-
   <article class="location-details">
     @if (location()) {
+      <div id="main-content">
+      <button
+        class="nav-button" id="nav-prev"
+        (click)="goToPrevious()"
+        [disabled]="!hasPrevious()">
+        ‹
+      </button>
       <section class="location-header">
         <h1>{{ location()!.name }}</h1>
         <img [src]="location()!.img" [alt]="location()!.name" class="location-image">
       </section>
+      <button
+            class="nav-button" id="nav-next"
+            (click)="goToNext()"
+            [disabled]="!hasNext()"
+            aria-label="Next location">
+            ›
+          </button>
+          
+      </div>
 
       <section class="location-info">
         <h2>Property Details</h2>
@@ -34,12 +43,4 @@
       <p>Location not found.</p>
     }
   </article>
-
-  <button
-    class="nav-button" id="nav-next"
-    (click)="goToNext()"
-    [disabled]="!hasNext()"
-    aria-label="Next location">
-    ›
-  </button>
 </div>
