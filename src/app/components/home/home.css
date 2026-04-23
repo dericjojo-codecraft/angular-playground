@@ -145,6 +145,7 @@
 
 app-housing-location {
   display: flex;
+  flex-direction: column;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 16px;
@@ -153,19 +154,16 @@ app-housing-location {
   transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
   cursor: pointer;
   align-items: center;
-  justify-content: center;
-  height: fit-content;
-  width: auto;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
   min-width: 0;
+  box-sizing: border-box;
 }
 
 app-housing-location:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}
-
-app-housing-location:active {
-  animation: tap 0.3s ease-in-out;
 }
 
 /* Confirmation Dialog */
@@ -388,4 +386,6 @@ input:focus + .slider {
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  height: 100%;
+  width: 100%;
 }

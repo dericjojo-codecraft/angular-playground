@@ -1,119 +1,54 @@
-import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { HousingLocation } from '@components/housing-location/housing-location';
+import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
+import { HousingLocation } from '../housing-location/housing-location';
 import { HousingLocationInfo } from '@models/housing-location';
-import { LocationService } from '@services/location-service';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { BASE_URL, LocationService } from '@services/location-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [HousingLocation, CommonModule, ReactiveFormsModule],
+  imports: [HousingLocation],
   templateUrl: './home.html',
-  styleUrl: './home.css'
+  styleUrl: './home.css',
 })
-
-export class Home implements OnInit, OnDestroy {
-  router: Router = inject(Router);
-
+export class Home {
   locationService: LocationService = inject(LocationService);
+  router = inject(Router)
+  baseUrl = inject(BASE_URL)
 
-  mode = signal<'Normal' | 'Edit Mode'>('Normal');
-  housingLocations = signal<HousingLocationInfo[]>([]);
-  
-  showDeletedOnly = signal<boolean>(false);
+  mode = signal<"Normal" | "Edit Mode">('Normal');
 
-  selectedLocationIds = signal<Set<number>>(new Set());
-  private fb = inject(FormBuilder);
-  addLocationForm = this.fb.group({
-    name: ['', Validators.required],
-    img: ['', Validators.required],
-    wifi: [false],
-    ac: [false],
-    garage: [false]
-  });
-  updateLocationForm = this.fb.group({
-    name: ['', Validators.required],
-    img: ['', Validators.required],
-    wifi: [false],
-    ac: [false],
-    garage: [false]
-  });
+  modeStatus = computed(() => {return this.mode() === "Normal" ? "Normal" : "Edit Mode"});
 
   showDeleteConfirmation = signal<boolean>(false);
-  showAddDialog = signal<boolean>(false);
-  showUpdateDialog = signal<boolean>(false);
-  editingLocationId = signal<number | null>(null);
+
+  selectedLocationIds = computed(() => this.locationService.locationServiceData().filter(loc => loc.selected && !this.locationService.isDeleted(loc.id)).map(loc => loc.id));
+  selectedCount = computed(() => this.locationService.locationServiceData().filter(loc => loc.selected && !this.locationService.isDeleted(loc.id)).length);
+  deletedCount = computed(() => this.locationService.getDeletedIds().length);
+
+  handleSelectionChange(event: { id: number; selected: boolean }) {
+    this.locationService.locationServiceData.update(list =>
+      list.map(loc => loc.id === event.id && !this.locationService.isDeleted(loc.id) ? { ...loc, selected: event.selected } : loc)
+    );
+  }
   
-  private destroy$ = new Subject<void>();
-
-  deletedButtonMessage = computed(() => 
-    this.showDeletedOnly() ? "Hide Deleted Locations ^" : "See Deleted Locations V"
-  );
-
-  activeLocations = computed(() => 
-    this.housingLocations().filter(loc => loc.isActive)
-  );
-
-  deletedLocations = computed(() => 
-    this.housingLocations().filter(loc => !loc.isActive)
-  );
-
-  ngOnInit() {
-    this.locationService.getAllLocations$()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(locations => {
-        this.housingLocations.set(locations);
-      });
-
-    this.locationService.selectedLocationIds$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(selectedIds => {
-        this.selectedLocationIds.set(selectedIds);
-      });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  handleLocationClicked(location: HousingLocationInfo | undefined) {
-    if (location) {
-      if (this.mode() === 'Normal') {
-        this.router.navigate([`/details/${location.id}`]);
-      } else {
-        if (this.selectedLocationIds().has(location.id)) {
-          this.locationService.deselectLocation(location.id);
-        } else {
-          this.locationService.selectLocation(location.id);
-        }
-      }
-    }
-  }
-
-  handleCheckbox() {
-    this.mode.update(prev => prev === 'Normal' ? 'Edit Mode' : 'Normal');
-    this.locationService.clearSelection();
-
-    console.log("Mode toggled to", this.mode());
-  }
-
-
-  // deletion functions
   handleDelete() {
-    if(this.selectedLocationIds().size > 0) {
-      this.showDeleteConfirmation.set(true);
+    const selectedIds = this.locationService.locationServiceData()
+      .filter(loc => loc.selected)
+      .map(loc => loc.id);
+    
+    if(selectedIds.length > 0) {
+      this.locationService.deleteSelectedLocations(selectedIds);
+    
+      this.locationService.locationServiceData.update(locations =>
+        locations.map(loc => selectedIds.includes(loc.id) ? { ...loc, selected: false } : loc)
+      );
+      
     } else {
-      alert("Select at least one location")
-    }
+      alert("Select at least one location to delete");
+    } 
   }
 
   confirmDelete() {
-    this.locationService.deleteSelectedLocations();
     this.showDeleteConfirmation.set(false);
   }
 
@@ -121,83 +56,53 @@ export class Home implements OnInit, OnDestroy {
     this.showDeleteConfirmation.set(false);
   }
 
+  restoreOriginal() {
+    this.locationService.restoreItems();
+  }
+
+  handleLocationClick(housingLocationInfo: HousingLocationInfo) {
+    if(this.mode() === "Normal") {
+      this.router.navigate(['details', housingLocationInfo.id])
+      const viewModels = this.locationService.locationServiceData().map(vm => {
+        const newVm = { ...vm };
+        newVm.selected = false;
+        return newVm;
+      })
+      this.locationService.locationServiceData.set(viewModels);
+    }
+  }
+
+  handleCheckbox() {
+    this.mode.update(prev => prev === "Normal" ? 'Edit Mode' : "Normal")
+
+    if(this.mode() === 'Normal'){
+      this.locationService.locationServiceData.update(list => list.map(loc => ({ ...loc, selected: false })));
+    }
+  }
+
+  addHousingLocation() {
+
+    console.log("Starting to add housing location...")
+
+    const data: HousingLocationInfo = {
+      id: 0,
+      name: 'Codecraft',
+      city: 'Mangalore',
+      state: 'Karnataka',
+      img: `${this.baseUrl}/bernard-hermant-CLKGGwIBTaY-unsplash.jpg`,
+      availableUnits: 1,
+      isActive: true,
+    }
+
+    this.locationService.addLocation(data)
+  }
+
   toggleDeletedView() {
     this.showDeletedOnly.update(prev => !prev);
   }
+  showDeletedOnly = signal<boolean>(false);
 
-  // restore function
-  restoreLocation(location: HousingLocationInfo) {
-    this.locationService.restoreLocation(location.id);
-  }
-
-
-  // addition functions
-  handleAddition() {
-    this.showAddDialog.set(true);
-  }
-
-  confirmAddition() {
-    if(this.addLocationForm.valid) {
-      const val = this.addLocationForm.value;
-
-      const properties: ("wifi" | "ac" | "garage")[] = [];
-      if (val.wifi) properties.push("wifi");
-      if (val.ac) properties.push("ac");
-      if (val.garage) properties.push("garage");
-
-      const newLocation: any = {
-        name: val.name,
-        img: val.img,
-        properties: properties,
-      };
-
-      this.locationService.addLocations([newLocation]);
-      this.cancelAddition();
-    }
-  }
-
-  cancelAddition() {
-    this.showAddDialog.set(false);
-    this.addLocationForm.reset();
-  }
-
-
-  // updation functions
-  handleUpdatation(location: HousingLocationInfo) {
-    this.showUpdateDialog.set(true);
-    this.editingLocationId.set(location.id);
-    this.updateLocationForm.patchValue({
-      name: location.name,
-      img: location.img,
-      wifi: location.properties?.includes('wifi') ?? false,
-      ac: location.properties?.includes('ac') ?? false,
-      garage: location.properties?.includes('garage') ?? false,
-    });
-  }
-
-  confirmUpdatation() {
-    if(this.updateLocationForm.valid) {
-      const val = this.updateLocationForm.value;
-
-      const properties: ("wifi" | "ac" | "garage")[] = [];
-      if (val.wifi) properties.push("wifi");
-      if (val.ac) properties.push("ac");
-      if (val.garage) properties.push("garage");
-
-      const udpatedLocation: any = {
-        id: this.editingLocationId(), 
-        name: val.name,
-        img: val.img || "",
-        properties: properties,
-      };
-
-      this.locationService.udpateLocation(udpatedLocation);
-      this.cancelUpdation();
-    }
-  }
-
-  cancelUpdation() {
-    this.showUpdateDialog.set(false);
-    this.updateLocationForm.reset();
-  }
+  deletedButtonMessage = computed(() => 
+    this.showDeletedOnly() ? "Hide Deleted Locations ^" : "See Deleted Locations V"
+  );
 }

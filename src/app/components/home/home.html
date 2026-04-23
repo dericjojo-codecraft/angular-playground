@@ -12,127 +12,31 @@
     </div>
 
     @if(mode() == "Edit Mode") {
-        <div class="btn-container">
-            <button (click)="handleAddition()" class="btn btn-danger">Add New Location</button>
-            @if(showAddDialog()) {
-                <div class="confirmation-overlay">
-                    <div class="confirmation-dialog">
-                        <h2>Add New Housing Location</h2>
-                        <form [formGroup]="addLocationForm" class="add-form">
-                            <div class="form-group">
-                                <label for="name">Location Name:</label>
-                                <input id="name" type="text" formControlName="name" placeholder="e.g. Sunny Apartment" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="img">Image URL:</label>
-                                <input id="img" type="text" formControlName="img" placeholder="https://..." />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Amenities:</label>
-                                <div class="checkbox-group">
-                                    <label><input type="checkbox" formControlName="wifi" /> Wifi</label>
-                                    <label><input type="checkbox" formControlName="ac" /> AC</label>
-                                    <label><input type="checkbox" formControlName="garage" /> Garage</label>
-                                </div>
-                            </div>
-
-                            <div class="confirmation-buttons">
-                                <button (click)="confirmAddition()" class="btn btn-primary" [disabled]="!addLocationForm.valid">Add</button>
-                                <button (click)="cancelAddition()" class="btn btn-secondary">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            }
+        <div class="btn-container">        
             <button (click)="handleDelete()" class="btn btn-secondary">Delete Selected</button>
         </div>
     }
 
     <div class="locations-section">
-        <h2>Active Locations</h2>
+        <h2>Available Locations</h2>
         <div class="grid">
-            @if(activeLocations().length > 0) {
-                @for (housingLocation of activeLocations(); track housingLocation.id) {
-                    <div class="location-card">
+            @if(locationService.visibleItems().length > 0) {
+                @for (housingLocation of locationService.locationServiceData(); track housingLocation.id) {
+                    @if(locationService.visibleItems().includes(housingLocation)) {
+                        <div class="location-card">
                         <app-housing-location
                             [location]="housingLocation"
-                            [isSelected]="selectedLocationIds().has(housingLocation.id)"
-                            (onLocationClick)="handleLocationClicked($event)"
+                            [isSelected]="selectedLocationIds().includes(housingLocation.id)"
+                            
+                            [isEditMode]="mode() === 'Edit Mode'"
+                            
+                            (selectedLocation)="handleSelectionChange($event)"
+                            
+                            (onLocationClick)="handleLocationClick(housingLocation)"
                         />
-                        @if(mode() === "Edit Mode") {
-                            <button (click)="handleUpdatation(housingLocation)" class="btn btn-secondary">Update {{housingLocation.name}}</button>
-                        }
-                        @if(showAddDialog()) {
-                <div class="confirmation-overlay">
-                    <div class="confirmation-dialog">
-                        <h2>Add New Housing Location</h2>
-                        <form [formGroup]="addLocationForm" class="add-form">
-                            <div class="form-group">
-                                <label for="name">Location Name:</label>
-                                <input id="name" type="text" formControlName="name" placeholder="e.g. Sunny Apartment" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="img">Image URL:</label>
-                                <input id="img" type="text" formControlName="img" placeholder="https://..." />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Amenities:</label>
-                                <div class="checkbox-group">
-                                    <label><input type="checkbox" formControlName="wifi" /> Wifi</label>
-                                    <label><input type="checkbox" formControlName="ac" /> AC</label>
-                                    <label><input type="checkbox" formControlName="garage" /> Garage</label>
-                                </div>
-                            </div>
-
-                            <div class="confirmation-buttons">
-                                <button (click)="confirmAddition()" class="btn btn-primary" [disabled]="!addLocationForm.valid">Add</button>
-                                <button (click)="cancelAddition()" class="btn btn-secondary">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            }@if(showUpdateDialog()) {
-                <div class="confirmation-overlay">
-                    <div class="confirmation-dialog">
-                        <h2>Update Housing Location</h2>
-                        <form [formGroup]="updateLocationForm" class="udpate-form">
-                            <div class="form-group">
-                                <label for="name">Location Name:</label>
-                                <input id="name" type="text" formControlName="name" placeholder="e.g. "+{{ location.id }} />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="img">Image URL:</label>
-                                <input id="img" type="text" formControlName="img" placeholder="https://..." />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Amenities:</label>
-                                <div class="checkbox-group">
-                                    <label><input type="checkbox" formControlName="wifi" /> Wifi</label>
-                                    <label><input type="checkbox" formControlName="ac" /> AC</label>
-                                    <label><input type="checkbox" formControlName="garage" /> Garage</label>
-                                </div>
-                            </div>
-
-                            <div class="confirmation-buttons">
-                                <button (click)="confirmUpdatation()" class="btn btn-primary" [disabled]="!updateLocationForm.valid">Update</button>
-                                <button (click)="cancelUpdation()" class="btn btn-secondary">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            }
-                    </div>
+                        </div>   
+                    }
                 }
-            } @else {
-                <div class="empty-state">
-                    <p>No active locations available</p>
-                </div>
             }
         </div>
     </div>
@@ -145,18 +49,19 @@
             <div class="locations-section">
                 <h2>Deleted Locations</h2>
                 <div class="grid">
-                    @if(deletedLocations().length > 0) {
-                        @for (housingLocation of deletedLocations(); track housingLocation.id) {
-                            <div class="location-card-wrapper">
-                                <app-housing-location
-                                    [location]="housingLocation"
-                                    [isSelected]="false"
-                                    (onLocationClick)="handleLocationClicked($event)"
-                                />
-                                <button (click)="restoreLocation(housingLocation)" class="btn btn-secondary btn-small">
-                                    Restore
-                                </button>
-                            </div>
+                    @if(deletedCount() > 0) {
+                        @for (housingLocation of locationService.locationServiceData(); track housingLocation.id) {
+                            @if(locationService.isDeleted(housingLocation.id)) {
+                                <div class="location-card-wrapper">
+                                    <app-housing-location
+                                        [location]="housingLocation"
+                                        [isSelected]="false"
+                                    />
+                                    <!-- <button (click)="restoreLocation(housingLocation)" class="btn btn-secondary btn-small">
+                                        Restore
+                                    </button> -->
+                                </div>
+                            }
                         }
                     } @else {
                         <div class="empty-state">
@@ -173,7 +78,7 @@
     <div class="confirmation-overlay">
         <div class="confirmation-dialog">
             <h2>Confirm Deletion</h2>
-            <p>Are you sure you want to delete {{ selectedLocationIds().size }} selected location(s)?</p>
+            <p>Are you sure you want to delete {{ selectedCount() }} selected location(s)?</p>
             <p style="font-size: 0.9rem; color: #666;">This action cannot be undone.</p>
             <div class="confirmation-buttons">
                 <button (click)="confirmDelete()" class="btn btn-danger">Delete</button>
