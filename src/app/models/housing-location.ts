@@ -2,8 +2,7 @@ export type HousingLocationInfo = {
   id: number;
   name: string;
   img: string;
-  city?: string;
-  state?: string;
+  address: string;
   availableUnits: number;
   properties?: ("wifi" | "ac" | "garage")[];
   isActive: boolean;

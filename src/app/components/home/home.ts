@@ -16,6 +16,7 @@ export class Home {
   baseUrl = inject(BASE_URL)
 
   mode = signal<"Normal" | "Edit Mode">('Normal');
+  panelClass = signal<boolean>(false);
 
   modeStatus = computed(() => {return this.mode() === "Normal" ? "Normal" : "Edit Mode"});
 
@@ -29,6 +30,10 @@ export class Home {
     this.locationService.locationServiceData.update(list =>
       list.map(loc => loc.id === event.id && !this.locationService.isDeleted(loc.id) ? { ...loc, selected: event.selected } : loc)
     );
+  }
+
+  ngOnInit() {
+    this.modeStatus();
   }
   
   handleDelete() {
@@ -84,23 +89,7 @@ export class Home {
   toggleAddView() {
     this.showAddOnly.update(prev => !prev);
   }
-
-  handleAddition() {
-    console.log("Starting to add housing location...")
-
-    const data: HousingLocationInfo = {
-      id: 10,
-      name: 'Codecraft',
-      city: 'Mangalore',
-      state: 'Karnataka',
-      img: `${this.baseUrl}/bernard-hermant-CLKGGwIBTaY-unsplash.jpg`,
-      availableUnits: 1,
-      isActive: true,
-    }
-
-    this.locationService.addLocation(data)
-  }
-
+  
   showDeletedOnly = signal<boolean>(false);
   toggleDeletedView() {
     this.showDeletedOnly.update(prev => !prev);
@@ -111,6 +100,20 @@ export class Home {
   );
 
   openLocationForm() {
-    this.router.navigate(['home', 'edit', 'form'])
+    this.router.navigate(['home', 'edit']);
+  }
+
+  togglePanelSignal(isOpen: boolean) {
+    this.panelClass.set(isOpen);
+    
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  ngOnDestroy() {
+    document.body.style.overflow = '';
   }
 }

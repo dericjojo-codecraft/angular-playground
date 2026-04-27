@@ -18,13 +18,13 @@
             [disabled]="!hasNext()"
             aria-label="Next location">
             ›
-          </button>
+        </button>
           
       </div>
 
+      <h2>Property Details</h2>
       <section class="location-info">
-        <h2>Property Details</h2>
-        <p><strong>ID:</strong> {{ location()!.id }}</p>
+        <p>Location: {{ location()!.address }}</p>
 
         @if (location()!.properties && location()!.properties!.length > 0) {
           <div class="properties">
@@ -44,3 +44,8 @@
     }
   </article>
 </div>
+<button class="btn btn-secondary" (click)="openLocationForm()">Edit Location</button>
+<router-outlet 
+    (activate)="togglePanelSignal(true)" 
+    (deactivate)="togglePanelSignal(false)">
+</router-outlet>

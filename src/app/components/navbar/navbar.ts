@@ -16,7 +16,4 @@ export class Navbar {
   goToSignalDemo() {
     this.router.navigate(['linked-signal']);
   }
-  goToFormDemo() {
-    this.router.navigate(['form']);
-  }
 }

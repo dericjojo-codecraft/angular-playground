@@ -44,7 +44,129 @@
     color: black;
     padding: 20px;
     position: fixed;
-    top: 0;
-    right: 10px;
+    top: 10px;
+    right: 20px;
     z-index: 1001;
+}
+
+/* Card Container */
+.form-container {
+    background-color: #f8fafc;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    max-width: 90%;
+    margin: 20px auto;
+}
+
+.form-container h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Sections */
+.form-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 16px;
+    padding-bottom: 0;
+}
+
+.form-section h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #555;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Form Groups (Label + Input) */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+
+.form-group input[type="text"] {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    background-color: white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input[type="text"]:focus {
+    border-color: #764ba2; /* Purple from navbar */
+    box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+}
+
+/* Error States */
+.error-msg {
+    color: #d93025;
+    font-size: 12px;
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+/* Button & Actions Layout */
+.form-actions {
+    display: flex;
+    justify-content: stretch;
+    margin-top: 24px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-primary {
+    background-color: #764ba2; /* Matches navbar gradient */
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #5e3b82;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
+}
+
+.btn-primary:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px
 }

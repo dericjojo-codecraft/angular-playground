@@ -1,29 +1,23 @@
-import { Component, inject, input, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HousingLocationInfo } from '@models/housing-location';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { LocationService } from '@services/location-service';
 
 @Component({
   selector: 'app-location-details',
-  imports: [],
+  imports: [RouterOutlet],
   templateUrl: './location-details.html',
   styleUrl: './location-details.css',
 })
 
 export class LocationDetails {
-  route: ActivatedRoute = inject(ActivatedRoute);
   router: Router = inject(Router);
   
   id = input.required<string>();
-
   locationService: LocationService = inject(LocationService);
-  location = signal<HousingLocationInfo | undefined>(undefined);
   allLocations = this.locationService.getAllLocations();
+  panelClass = signal<boolean>(false);
 
-  ngOnInit() {
-    const fetchedLocation = this.locationService.getLocationForId(Number(this.id()));
-    this.location.set(fetchedLocation);
-  }
+  location = computed(() => this.locationService.getLocationForId(Number(this.id())));
 
   goToPrevious() {
     if (this.location()) {
@@ -72,4 +66,27 @@ export class LocationDetails {
     const currentIndex = allLocations.findIndex(loc => loc.id === this.location()!.id);
     return currentIndex < allLocations.length - 1;
   }
+
+  openLocationForm() {
+    this.router.navigate([`details/${this.location()?.id}`, 'edit']);
+  }
+
+  editLocation() {
+    console.log(this.location()?.address);
+  }
+
+  togglePanelSignal(isOpen: boolean) {
+    this.panelClass.set(isOpen);
+    
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  ngOnDestroy() {
+    document.body.style.overflow = '';
+  }
+
 }

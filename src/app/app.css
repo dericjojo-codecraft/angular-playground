@@ -61,3 +61,7 @@ h1 {
   .footer-line:last-child {
     font-weight: 300;
   }
+
+html, body {
+  overflow: hidden;
+}

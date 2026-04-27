@@ -1,5 +1,4 @@
 import { Home } from '@components/home/home';
-import { FormsDemo } from '@components/forms-demo/forms-demo';
 import { LinkedSignal } from '@components/linked-signal/linked-signal';
 import { Routes } from '@angular/router';
 import { LocationForm } from '@components/location-form/location-form';
@@ -18,22 +17,21 @@ export const routes: Routes = [
             {
                 path: 'edit',
                 component: LocationForm,
-                title: 'Panel Demo',
-                children: [
-                    {
-                        path: 'form',
-                        component: FormsDemo,
-                        title: 'Form Demo'
-                    },
-                ]
+                title: 'Panel Form',
             },
         ]
     },
     {
         path: 'details/:id',
-        //component: LocationDetails,
         title: 'Details',
-        loadComponent: () => import('@components/location-details/location-details').then(m => m.LocationDetails)
+        loadComponent: () => import('@components/location-details/location-details').then(m => m.LocationDetails),
+        children: [
+            {
+                path: 'edit',
+                component: LocationForm,
+                title: 'Panel Demo',
+            },
+        ]
     },
     {
         path: 'linked-signal',
